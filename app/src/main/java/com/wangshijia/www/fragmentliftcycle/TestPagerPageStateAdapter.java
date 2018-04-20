@@ -3,7 +3,7 @@ package com.wangshijia.www.fragmentliftcycle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,11 +13,11 @@ import java.util.List;
  * Created by wangshijia on 2018/2/2.
  */
 
-public class TestPagerAdapter extends FragmentPagerAdapter {
+public class TestPagerPageStateAdapter extends FragmentStatePagerAdapter {
     ArrayList<Fragment> fragments;
     List<String> titles;
 
-    public TestPagerAdapter(FragmentManager fm, ArrayList<Fragment> fragments, String[] titles) {
+    public TestPagerPageStateAdapter(FragmentManager fm, ArrayList<Fragment> fragments, String[] titles) {
         super(fm);
         this.fragments = fragments;
         if (titles != null)
