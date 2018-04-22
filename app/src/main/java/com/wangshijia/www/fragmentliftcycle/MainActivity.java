@@ -47,7 +47,8 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         navigation = (BottomNavigationView) findViewById(R.id.design_bottom_sheet);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         viewPager.setAdapter(new TestPagerPagerAdapter(getSupportFragmentManager(), fragments, null));
-        viewPager.setOffscreenPageLimit(4);
+//        viewPager.setAdapter(new TestPagerPageStateAdapter(getSupportFragmentManager(), fragments, null));
+//        viewPager.setOffscreenPageLimit(4);
     }
 
     private void moveToFragmentHideShowActivity() {

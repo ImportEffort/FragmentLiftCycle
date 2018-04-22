@@ -28,7 +28,7 @@ public class BottomTabFragment2 extends LazyLoadBaseFragment {
         fragment.setArguments(args);
         return fragment;
     }
-//
+
 //    @Override
 //    protected int getLayoutRes() {
 //        return R.layout.fragment_test;
@@ -61,7 +61,7 @@ public class BottomTabFragment2 extends LazyLoadBaseFragment {
 
         String[] titles = {"Tab1", "Tab2", "Tab3", "Tab4"};
 
-        viewPager.setAdapter(new TestPagerPageStateAdapter(getChildFragmentManager(), fragments, titles));
+        viewPager.setAdapter(new TestPagerPagerAdapter(getChildFragmentManager(), fragments, titles));
         tabLayout.setupWithViewPager(viewPager, false);
     }
 }

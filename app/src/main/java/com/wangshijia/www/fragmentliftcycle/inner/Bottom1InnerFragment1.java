@@ -1,8 +1,8 @@
 package com.wangshijia.www.fragmentliftcycle.inner;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.view.View;
-import android.widget.TextView;
 
 import com.wangshijia.www.fragmentliftcycle.LazyLoadBaseFragment;
 import com.wangshijia.www.fragmentliftcycle.R;
@@ -15,7 +15,6 @@ import com.wangshijia.www.fragmentliftcycle.R;
  */
 public class Bottom1InnerFragment1 extends LazyLoadBaseFragment {
 
-    private String text = getClass().getSimpleName() + " ";
 
     public static Bottom1InnerFragment1 newInstance(String params) {
         Bottom1InnerFragment1 fragment = new Bottom1InnerFragment1();
@@ -27,12 +26,12 @@ public class Bottom1InnerFragment1 extends LazyLoadBaseFragment {
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.fragment_test;
+        return R.layout.fragment_third;
     }
 
     @Override
     protected void initView(View rootView) {
-        TextView textView = rootView.findViewById(R.id.text);
-        textView.setText(text);
+        FragmentManager fragmentManager = getChildFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.innerFragment, ThirdInnerFragment.newInstance("trrrr")).commit();
     }
 }

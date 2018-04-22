@@ -46,9 +46,9 @@ public class BaseLifeCircleFragment extends Fragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         LogUtils.i(TAG,getClass().getSimpleName() + "  setUserVisibleHint " + isVisibleToUser);
-        LogUtils.i(TAG,getClass().getSimpleName() + "  isResumed() " + isResumed());
-        LogUtils.i(TAG,getClass().getSimpleName() + "  isAdded() " + isAdded());
-        LogUtils.i(TAG, getClass().getSimpleName() + "  setUserVisibleHint getParentFragment != null  " + (getParentFragment() != null));
+//        LogUtils.i(TAG,getClass().getSimpleName() + "  isResumed() " + isResumed());
+//        LogUtils.i(TAG,getClass().getSimpleName() + "  isAdded() " + isAdded());
+//        LogUtils.i(TAG, getClass().getSimpleName() + "  setUserVisibleHint getParentFragment != null  " + (getParentFragment() != null));
     }
 
     @Override
@@ -61,7 +61,7 @@ public class BaseLifeCircleFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         LogUtils.i(TAG,getClass().getSimpleName() + "  onActivityCreated ");
-        LogUtils.i(TAG, getClass().getSimpleName() + "  onActivityCreated getParentFragment != null  " + (getParentFragment() != null));
+//        LogUtils.i(TAG, getClass().getSimpleName() + "  onActivityCreated getParentFragment != null  " + (getParentFragment() != null));
     }
 
     @Override
@@ -75,8 +75,8 @@ public class BaseLifeCircleFragment extends Fragment {
     public void onResume() {
         super.onResume();
         LogUtils.i(TAG,getClass().getSimpleName() + " onResume  ");
-        LogUtils.i(TAG,getClass().getSimpleName() + "   fragment.getUserVisibleHint() = "  + getUserVisibleHint());
-        LogUtils.i(TAG, getClass().getSimpleName() + "  onResume getParentFragment != null  " + (getParentFragment() != null));
+//        LogUtils.i(TAG,getClass().getSimpleName() + "   fragment.getUserVisibleHint() = "  + getUserVisibleHint());
+//        LogUtils.i(TAG, getClass().getSimpleName() + "  onResume getParentFragment != null  " + (getParentFragment() != null));
 
     }
 
@@ -84,15 +84,15 @@ public class BaseLifeCircleFragment extends Fragment {
     public void onPause() {
         super.onPause();
         LogUtils.i(TAG,getClass().getSimpleName() + "  onPause ");
-        LogUtils.i(TAG,getClass().getSimpleName() + "   fragment.getUserVisibleHint() = "  + getUserVisibleHint());
-        LogUtils.i(TAG, getClass().getSimpleName() + "  onPause getParentFragment != null  " + (getParentFragment() != null));
+//        LogUtils.i(TAG,getClass().getSimpleName() + "   fragment.getUserVisibleHint() = "  + getUserVisibleHint());
+//        LogUtils.i(TAG, getClass().getSimpleName() + "  onPause getParentFragment != null  " + (getParentFragment() != null));
 
     }
 
     @Override
     public void onStop() {
         super.onStop();
-//        LogUtils.i(TAG,getClass().getSimpleName() + "  onStop ");
+        LogUtils.i(TAG,getClass().getSimpleName() + "  onStop ");
     }
 
     @Override
@@ -110,6 +110,6 @@ public class BaseLifeCircleFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-//        LogUtils.i(TAG,getClass().getSimpleName() + "  onDetach ");
+        LogUtils.i(TAG,getClass().getSimpleName() + "  onDetach ");
     }
 }
