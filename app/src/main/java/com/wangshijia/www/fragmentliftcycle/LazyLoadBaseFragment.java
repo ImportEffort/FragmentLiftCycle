@@ -143,9 +143,13 @@ public abstract class LazyLoadBaseFragment extends BaseLifeCircleFragment {
      * @return true fragment 不可见， false 父 fragment 可见
      */
     private boolean isParentInvisible() {
-        LazyLoadBaseFragment fragment = (LazyLoadBaseFragment) getParentFragment();
-        return fragment != null && !fragment.isSupportVisible();
-
+        Fragment parentFragment = getParentFragment();
+        if (parentFragment instanceof LazyLoadBaseFragment ) {
+            LazyLoadBaseFragment fragment = (LazyLoadBaseFragment) parentFragment;
+            return !fragment.isSupportVisible();
+        }else {
+            return false;
+        }
     }
 
     private boolean isSupportVisible() {
