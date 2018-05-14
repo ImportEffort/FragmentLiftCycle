@@ -22,6 +22,10 @@ public class BottomTabFragment1 extends LazyLoadBaseFragment {
         return fragment;
     }
 
+    public String getText() {
+        return text;
+    }
+
     @Override
     protected int getLayoutRes() {
         return R.layout.fragment_test;

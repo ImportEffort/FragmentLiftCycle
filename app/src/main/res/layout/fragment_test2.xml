@@ -5,11 +5,16 @@
              tools:context=".BottomTabFragment1">
 
     <TextView
-        android:background="@color/colorPrimary"
         android:id="@+id/text"
         android:layout_gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:textSize="24sp"/>
 
+
+    <Button
+        android:text="我是嵌套内部"
+        android:layout_gravity="bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 </FrameLayout>

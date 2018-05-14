@@ -1,0 +1,37 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:background="@color/colorAccent"
+             android:layout_height="match_parent"
+             tools:context=".BottomTabFragment1">
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="tab1"/>
+
+        <android.support.design.widget.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="tab2"/>
+
+    </android.support.design.widget.TabLayout>
+
+
+   <FrameLayout
+       android:id="@+id/innerFragmentContainer"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"/>
+
+
+    <Button
+        android:text="我是嵌套内部3"
+        android:layout_gravity="right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</FrameLayout>

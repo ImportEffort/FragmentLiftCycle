@@ -26,7 +26,6 @@ public class FragmentHideShowActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fragment_hide_show);
-
         BottomNavigationView navigation = findViewById(R.id.design_bottom_sheet);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         showTargetFragment(0);
@@ -87,7 +86,7 @@ public class FragmentHideShowActivity extends AppCompatActivity {
             default:
                 break;
         }
-        transaction.commit();
+        transaction.commitAllowingStateLoss();
     }
 
     private void hideFragments() {
@@ -108,7 +107,7 @@ public class FragmentHideShowActivity extends AppCompatActivity {
             fragmentTransaction.hide(fragment4);
         }
 
-        fragmentTransaction.commit();
+        fragmentTransaction.commitAllowingStateLoss();
 
     }
 }
