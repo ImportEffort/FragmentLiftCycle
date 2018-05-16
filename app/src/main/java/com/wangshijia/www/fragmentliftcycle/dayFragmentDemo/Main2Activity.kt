@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v7.app.AppCompatActivity
 import com.wangshijia.www.fragmentliftcycle.*
@@ -12,7 +13,7 @@ import java.util.*
 
 class Main2Activity : AppCompatActivity() {
 
-    private var mSectionsPagerAdapter: SectionsPagerAdapter? = null
+    private lateinit var mSectionsPagerAdapter: SectionsPagerAdapter
     private lateinit var fragments: LinkedList<LazyLoadBaseFragment>
     private lateinit var titles: LinkedList<String>
 
@@ -21,9 +22,9 @@ class Main2Activity : AppCompatActivity() {
         setContentView(R.layout.activity_main2)
 
         initDefaultFragments()
+//        container.offscreenPageLimit = fragments.size
 
         mSectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
-
         container.adapter = mSectionsPagerAdapter
 
         tabLayout.setupWithViewPager(container)
@@ -34,7 +35,7 @@ class Main2Activity : AppCompatActivity() {
                 initAddFragments()
                 mSectionsPagerAdapter!!.notifyDataSetChanged()
             }
-        }, 4000)
+        }, 5000)
 
         add.setOnClickListener { addFragment() }
         delete.setOnClickListener { deleteFragment() }
@@ -42,29 +43,26 @@ class Main2Activity : AppCompatActivity() {
 
     private fun initDefaultFragments() {
         fragments = LinkedList()
-        fragments.add(BottomTabFragment2.newInstance("OuterFragment2"))
-        fragments.add(BottomTabFragment1.newInstance("OuterFragment1"))
-        fragments.add(BottomTabFragment3.newInstance("OuterFragment3"))
-        fragments.add(BottomTabFragment4.newInstance("OuterFragment4"))
         titles = LinkedList()
-        titles.add("tab1")
-        titles.add("tab2")
-        titles.add("tab3")
-        titles.add("tab4")
+        for (i in 0.. 4){
+            fragments.add(TestFragment.newInstance("OuterFragment$i"))
+            titles.add("Tab$i")
+        }
     }
 
     private fun initAddFragments() {
-        fragments.add(BottomTabFragment2.newInstance("OuterFragment6"))
-        fragments.add(BottomTabFragment1.newInstance("OuterFragment5"))
-        fragments.add(BottomTabFragment3.newInstance("OuterFragment7"))
-        fragments.add(BottomTabFragment4.newInstance("OuterFragment8"))
-        titles.add("newTab1")
-        titles.add("newTab2")
-        titles.add("newTab3")
-        titles.add("newTab4")
+        for (i in 5.. 8){
+            fragments.add(TestFragment.newInstance("OuterFragment$i"))
+            titles.add("newTab$i")
+        }
+        LogUtils.e("加载新 tab 完成")
+        mSectionsPagerAdapter.notifyDataSetChanged()
+
+//        container.offscreenPageLimit = fragments.size
+
     }
 
-    private var num = 5
+    private var num = 9
     private fun addFragment() {
         fragments.add(BottomTabFragment1.newInstance("OuterFragment$num"))
         titles.add("newTab$num")
@@ -80,7 +78,22 @@ class Main2Activity : AppCompatActivity() {
 
     }
 
-    inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
+    inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
+
+        override fun getItem(position: Int): Fragment {
+            return fragments[position]
+        }
+
+        override fun getCount(): Int {
+            return fragments.size
+        }
+
+        override fun getPageTitle(position: Int): CharSequence? {
+            return titles[position]
+        }
+    }
+
+    inner class SectionsStatePagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
 
         override fun getItem(position: Int): Fragment {
             return fragments[position]

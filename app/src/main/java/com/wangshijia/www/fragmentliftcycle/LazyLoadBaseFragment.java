@@ -30,7 +30,6 @@ public abstract class LazyLoadBaseFragment extends BaseLifeCircleFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-
         if (rootView == null) {
             rootView = inflater.inflate(getLayoutRes(), container, false);
         }

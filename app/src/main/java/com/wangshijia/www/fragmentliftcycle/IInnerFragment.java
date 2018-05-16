@@ -17,6 +17,7 @@ public class IInnerFragment extends LazyLoadBaseFragment {
 
     private String[] content = {"渣渣辉", "古天乐", "游戏", "贪玩蓝月"};
     private String text = getClass().getSimpleName() + " ";
+    private String name;
 
 
     public static IInnerFragment newInstance(String params) {
@@ -27,6 +28,33 @@ public class IInnerFragment extends LazyLoadBaseFragment {
         return fragment;
     }
 
+    public static IInnerFragment newInstance(String outerName, String index) {
+        IInnerFragment fragment = new IInnerFragment();
+        Bundle args = new Bundle();
+        args.putString("outerName", outerName);
+        args.putString("index", index);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onFragmentResume() {
+        LogUtils.e(name + "  对用户可见");
+
+    }
+
+    @Override
+    public void onFragmentPause() {
+        LogUtils.e(name + "  对用户不可见");
+
+    }
+
+    @Override
+    public void onFragmentFirstVisible() {
+        LogUtils.e(name + "  对用户第一次可见");
+
+    }
+
     @Override
     protected int getLayoutRes() {
         return R.layout.fragment_test2;
@@ -35,7 +63,16 @@ public class IInnerFragment extends LazyLoadBaseFragment {
     @Override
     protected void initView(View rootView) {
         TextView textView = rootView.findViewById(R.id.text);
-        textView.setText(text);
+        Bundle bundle = getArguments();
+        if (bundle != null && !(bundle.getString("outerName") == null)) {
+            String outerName = bundle.getString("outerName");
+            String index = bundle.getString("index");
+            name = String.format("%s %s", outerName, index);
+            textView.setText(name);
+        }else {
+            textView.setText(text);
+        }
+
     }
 
 
