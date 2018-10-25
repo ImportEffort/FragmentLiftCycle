@@ -9,31 +9,50 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class BaseLifeCircleFragment extends Fragment {
+public abstract class BaseLifeCircleFragment extends Fragment {
 
     public static final String TAG =  "BaseLifeCircleFragment";
+    protected View rootView;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-//        LogUtils.i(TAG,getClass().getSimpleName() + "  onAttach");
+        LogUtils.i(TAG,getClass().getSimpleName() + "  onAttach");
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        LogUtils.i(TAG, getClass().getSimpleName() + "  onCreate getParentFragment  " + (getParentFragment() == null));
-//        LogUtils.i(TAG,getClass().getSimpleName() + "  onCreate");
+        LogUtils.i(TAG,getClass().getSimpleName() + "  onCreate");
     }
 
-    @Nullable
+
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         LogUtils.i(TAG,getClass().getSimpleName() + "  onCreateView");
-//        LogUtils.i(TAG, getClass().getSimpleName() + "  onCreateView getParentFragment  " + (getParentFragment() == null));
-        return super.onCreateView(inflater, container, savedInstanceState);
+        if (rootView == null) {
+            rootView = inflater.inflate(getLayoutRes(), container, false);
+        }
+        initView(rootView);
+        return rootView;
     }
+
+
+    /**
+     * 返回布局 resId
+     *
+     * @return layoutId
+     */
+    protected abstract int getLayoutRes();
+
+
+    /**
+     * 初始化view
+     *
+     * @param rootView
+     */
+    protected abstract void initView(View rootView);
 
     @Override
     public void onAttachFragment(Fragment childFragment) {

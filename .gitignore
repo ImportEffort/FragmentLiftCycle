@@ -1,9 +1,12 @@
 *.iml
-.gradle
 /local.properties
-/.idea/workspace.xml
-/.idea/libraries
+/.idea
 .DS_Store
-/build
+*/build
 /captures
-.externalNativeBuild
+.bin
+local.properties
+build/
+gradle/
+/release
+java_pid37193.hprof

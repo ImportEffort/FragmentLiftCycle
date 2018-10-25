@@ -32,6 +32,7 @@ public class Bottom1InnerFragment3 extends LazyLoadBaseFragment {
 
     @Override
     protected void initView(View rootView) {
+        super.initView(rootView);
         TextView textView = rootView.findViewById(R.id.text);
         textView.setText(text);
     }

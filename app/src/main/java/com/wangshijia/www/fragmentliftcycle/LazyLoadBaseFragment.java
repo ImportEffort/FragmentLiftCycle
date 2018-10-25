@@ -1,13 +1,12 @@
 package com.wangshijia.www.fragmentliftcycle;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import java.util.List;
 
@@ -18,24 +17,11 @@ import java.util.List;
  */
 public abstract class LazyLoadBaseFragment extends BaseLifeCircleFragment {
 
-    protected View rootView = null;
-
-
     private boolean mIsFirstVisible = true;
 
     private boolean isViewCreated = false;
 
     private boolean currentVisibleState = false;
-
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-        if (rootView == null) {
-            rootView = inflater.inflate(getLayoutRes(), container, false);
-        }
-        initView(rootView);
-        return rootView;
-    }
 
 
     @Override
@@ -69,8 +55,6 @@ public abstract class LazyLoadBaseFragment extends BaseLifeCircleFragment {
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        LogUtils.e(getClass().getSimpleName() + "  onHiddenChanged dispatchChildVisibleState  hidden " + hidden);
-
         if (hidden) {
             dispatchUserVisibleHint(false);
         } else {
@@ -98,10 +82,6 @@ public abstract class LazyLoadBaseFragment extends BaseLifeCircleFragment {
         }
     }
 
-    private boolean isFragmentVisible(Fragment fragment) {
-        return !fragment.isHidden() && fragment.getUserVisibleHint();
-    }
-
 
     /**
      * 统一处理 显示隐藏
@@ -111,30 +91,58 @@ public abstract class LazyLoadBaseFragment extends BaseLifeCircleFragment {
     private void dispatchUserVisibleHint(boolean visible) {
         //当前 Fragment 是 child 时候 作为缓存 Fragment 的子 fragment getUserVisibleHint = true
         //但当父 fragment 不可见所以 currentVisibleState = false 直接 return 掉
-//        LogUtils.e(getClass().getSimpleName() + "  dispatchUserVisibleHint isParentInvisible() " + isParentInvisible());
         // 这里限制则可以限制多层嵌套的时候子 Fragment 的分发
-        if (visible && isParentInvisible()) return;
-//
-//        //此处是对子 Fragment 不可见的限制，因为 子 Fragment 先于父 Fragment回调本方法 currentVisibleState 置位 false
-//        // 当父 dispatchChildVisibleState 的时候第二次回调本方法 visible = false 所以此处 visible 将直接返回
+        if (visible && isParentInvisible()) {
+            return;
+        }
+        //此处是对子 Fragment 不可见的限制，因为 子 Fragment 先于父 Fragment回调本方法 currentVisibleState 置位 false
+        // 当父 dispatchChildVisibleState 的时候第二次回调本方法 visible = false 所以此处 visible 将直接返回
         if (currentVisibleState == visible) {
             return;
         }
-
         currentVisibleState = visible;
 
         if (visible) {
+            if (!isAdded()) {
+                return;
+            }
             if (mIsFirstVisible) {
-                mIsFirstVisible = false;
                 onFragmentFirstVisible();
+                onFragmentResume(true);
+                mIsFirstVisible = false;
+            } else {
+                onFragmentResume(false);
             }
             onFragmentResume();
-            dispatchChildVisibleState(true);
+            enqueueDispatchVisible();
         } else {
             dispatchChildVisibleState(false);
             onFragmentPause();
         }
     }
+
+    /**
+     * 由于下 onFirstVisible 中添加ViewPager Adapter 的时候由于异步提交导致 先派发了 子fragment 的 onFirstVisible
+     * 造成空指针 所以将可见事件派发主线成
+     */
+    private void enqueueDispatchVisible() {
+        getHandler().post(new Runnable() {
+            @Override
+            public void run() {
+                dispatchChildVisibleState(true);
+            }
+        });
+    }
+
+    private Handler mHandler;
+
+    private Handler getHandler() {
+        if (mHandler == null) {
+            mHandler = new Handler(Looper.getMainLooper());
+        }
+        return mHandler;
+    }
+
 
     /**
      * 用于分发可见时间的时候父获取 fragment 是否隐藏
@@ -143,10 +151,10 @@ public abstract class LazyLoadBaseFragment extends BaseLifeCircleFragment {
      */
     private boolean isParentInvisible() {
         Fragment parentFragment = getParentFragment();
-        if (parentFragment instanceof LazyLoadBaseFragment ) {
+        if (parentFragment instanceof LazyLoadBaseFragment) {
             LazyLoadBaseFragment fragment = (LazyLoadBaseFragment) parentFragment;
             return !fragment.isSupportVisible();
-        }else {
+        } else {
             return false;
         }
     }
@@ -164,33 +172,61 @@ public abstract class LazyLoadBaseFragment extends BaseLifeCircleFragment {
      * <p>
      * 当真正的外部 Fragment 可见的时候，走 setVisibleHint (VP 中)或者 onActivityCreated (hide show) 的时候
      * 从对应的生命周期入口调用 dispatchChildVisibleState 通知子 Fragment 可见状态
+     * <p>
+     * //bug fix Fragment has not been attached yet
      *
      * @param visible
      */
     private void dispatchChildVisibleState(boolean visible) {
+        if (!isAdded()) {
+            return;
+        }
         FragmentManager childFragmentManager = getChildFragmentManager();
         List<Fragment> fragments = childFragmentManager.getFragments();
         if (!fragments.isEmpty()) {
             for (Fragment child : fragments) {
-                if (child instanceof LazyLoadBaseFragment && !child.isHidden() && child.getUserVisibleHint()) {
+                if (child instanceof LazyLoadBaseFragment && child.isAdded() && !child.isHidden() && child.getUserVisibleHint()) {
                     ((LazyLoadBaseFragment) child).dispatchUserVisibleHint(visible);
                 }
             }
         }
     }
 
-    public void onFragmentFirstVisible() {
-        LogUtils.e(getClass().getSimpleName() + "  对用户第一次可见");
-
+    @Override
+    protected void initView(View view) {
     }
 
+    /**
+     * 是否已经初始化 View 完毕
+     * 这里是指如果在 onFirstVisible 中去初始化 View 的时候
+     * 而 initView(View view) 初始化View 时机是在 inflate 布局后
+     *
+     * @return 是否已经初始化 View 完毕
+     */
+    public boolean hasFirstVisible() {
+        return !mIsFirstVisible;
+    }
+
+    public void onFragmentFirstVisible() {
+    }
+
+    /**
+     * 每次可见都回调
+     */
     public void onFragmentResume() {
-        LogUtils.e(getClass().getSimpleName() + "  对用户可见");
+    }
+
+    /**
+     * 添加是否是第一次可见的标识 切勿和 onFragmentResume 同时使用因为两个方法回调时机一样
+     *
+     * @param firstResume true 是第一次可见 == onFirstVisible  false 去除第一次回调
+     */
+    public void onFragmentResume(boolean firstResume) {
     }
 
     public void onFragmentPause() {
-        LogUtils.e(getClass().getSimpleName() + "  对用户不可见");
     }
+
 
     @Override
     public void onDestroyView() {
@@ -199,19 +235,4 @@ public abstract class LazyLoadBaseFragment extends BaseLifeCircleFragment {
         mIsFirstVisible = true;
     }
 
-
-    /**
-     * 返回布局 resId
-     *
-     * @return layoutId
-     */
-    protected abstract int getLayoutRes();
-
-
-    /**
-     * 初始化view
-     *
-     * @param rootView
-     */
-    protected abstract void initView(View rootView);
 }

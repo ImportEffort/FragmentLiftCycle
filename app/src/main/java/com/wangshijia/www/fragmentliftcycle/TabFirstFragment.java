@@ -3,14 +3,13 @@ package com.wangshijia.www.fragmentliftcycle;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
-import android.widget.TextView;
 
-public class TabFragment extends LazyLoadBaseFragment {
+public class TabFirstFragment extends BaseRecyclerViewFragment {
 
     private String text;
 
-    public static TabFragment newInstance(String params) {
-        TabFragment fragment = new TabFragment();
+    public static TabFirstFragment newInstance(String params) {
+        TabFirstFragment fragment = new TabFirstFragment();
         Bundle args = new Bundle();
         args.putString("params", params);
         fragment.setArguments(args);
@@ -31,8 +30,10 @@ public class TabFragment extends LazyLoadBaseFragment {
     @Override
     public void onFragmentFirstVisible() {
         super.onFragmentFirstVisible();
-        TextView textView = rootView.findViewById(R.id.text);
-        textView.setText(text);
+//        LogUtils.e("    之前   " + (recyclerView == null ));
+
+        recyclerView.setHasFixedSize(false);
+//        LogUtils.e("     之后  " + (recyclerView == null ));
     }
 
     @Override
